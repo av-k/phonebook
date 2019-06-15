@@ -1,35 +1,39 @@
 import Joi from '@hapi/joi';
 import Boom from '@hapi/boom';
+import Mongodb from 'mongodb';
 import { getProp } from '../utils/helpers';
-import config from '../config';
 
 /**
- * Handler for method POST - create a new contact
+ * Handler for method PUT - update an exists contact
  * @returns {object} - router config
  */
-export default function contactCreate() {
-  const { VALIDATION } = config;
+export default function contactUpdate() {
+  const { ObjectID } = Mongodb;
 
   async function handler(request) {
     const { db } = request.mongo;
-    const newContact = {
+    const { id } = request.params;
+    const contact = {
       $set: {
         ...request.payload,
-        createdAt: new Date(),
         updatedAt: new Date()
       }
     };
     const findOneAndUpdateFilter = {
-      phoneNumber: { $eq: getProp(request, 'payload.phoneNumber') }
+      _id: { $eq: ObjectID(id) }
     };
     const findOneAndUpdateOptions = {
-      upsert: true,
+      upsert: false,
       returnOriginal: false
     };
 
     try {
+      if (Object.keys(request.payload).length === 0) {
+        return { success: false, data: null };
+      }
+
       const foundAndUpdated = await db.collection('contacts')
-        .findOneAndUpdate(findOneAndUpdateFilter, newContact, findOneAndUpdateOptions);
+        .findOneAndUpdate(findOneAndUpdateFilter, contact, findOneAndUpdateOptions);
       const success = true;
       const data = getProp(foundAndUpdated, 'value', {});
 
@@ -40,11 +44,11 @@ export default function contactCreate() {
   }
 
   return {
-    method: 'POST',
-    path: '/contacts/',
+    method: 'PUT',
+    path: '/contacts/{id}',
     config: {
       handler,
-      description: 'Create a new contact',
+      description: 'Update an exists contact',
       tags: ['api'],
       plugins: {
         'hapi-swagger': {
@@ -52,10 +56,13 @@ export default function contactCreate() {
         }
       },
       validate: {
+        params: {
+          id: Joi.string().required()
+        },
         payload: Joi.object({
-          firstName: Joi.string().required(),
-          lastName: Joi.string().required(),
-          phoneNumber: Joi.string().regex(VALIDATION.PHONE_NUMBER).required()
+          firstName: Joi.string().optional(),
+          lastName: Joi.string().optional(),
+          phoneNumber: Joi.string().optional()
         })
       }
     }

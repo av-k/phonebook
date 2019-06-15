@@ -22,7 +22,8 @@
     "glob": "^7.1.4",
     "hapi-mongodb": "^9.0.0",
     "hapi-pagination": "^2.1.0",
-    "hapi-swagger": "^10.0.2"
+    "hapi-swagger": "^10.0.2",
+    "mongodb": "^3.2.7"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
