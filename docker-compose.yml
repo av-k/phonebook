@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+  api:
+    container_name: phonebook_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - "./api/src:/app/src"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      VERSION: ${API_VERSION}
+      HOST: ${API_HOST}
+      PORT: ${API_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    ports:
+      - ${API_PORT}:${API_PORT}
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    container_name: phonebook_db
+    image: mongo:latest
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+    - type: "volume"
+      source: db-data
+      target: /data/db
+      volume:
+        nocopy: true
+
+volumes:
+  db-data:

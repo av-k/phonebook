@@ -1,0 +1,33 @@
+{
+  "name": "phonebook_api",
+  "version": "0.0.1",
+  "description": "REST API for Phonebook Application",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon .",
+    "lint:js": "eslint --ext .js src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "av-k",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/boom": "^7.4.2",
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/inert": "^5.2.0",
+    "@hapi/joi": "^15.0.3",
+    "@hapi/vision": "^5.5.2",
+    "blipp": "^4.0.0",
+    "dotenv": "^8.0.0",
+    "esm": "^3.2.25",
+    "glob": "^7.1.4",
+    "hapi-mongodb": "^9.0.0",
+    "hapi-pagination": "^2.1.0",
+    "hapi-swagger": "^10.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "nodemon": "^1.19.1"
+  }
+}
