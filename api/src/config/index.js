@@ -1,5 +1,5 @@
-import env from './env';
-import * as constants from './constants';
+const env = require('./env');
+const constants = require('./constants');
 
 
 const common = {
@@ -10,4 +10,4 @@ const common = {
 
 console.table(env); // eslint-disable-line
 
-export default common;
+module.exports = common;

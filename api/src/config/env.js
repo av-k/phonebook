@@ -24,8 +24,9 @@ const envVariables = Object.keys(process.env).reduce((accumulator, envName) => {
 
   return accumulator;
 }, {});
-
-export default {
+const common = {
   ...defaultEnvVariables,
   ...envVariables
 };
+
+module.exports = common;

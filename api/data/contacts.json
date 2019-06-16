@@ -1,0 +1,189 @@
+{
+  "data": [
+    {
+      "firstName": "Lena",
+      "lastName": "Unger",
+      "phoneNumber": "06132812182"
+    },
+    {
+      "firstName": "Katrin",
+      "lastName": "Gaertner",
+      "phoneNumber": "03683511589"
+    },
+    {
+      "firstName": "Marco",
+      "lastName": "Kuester",
+      "phoneNumber": "06825321846"
+    },
+    {
+      "firstName": "Leon",
+      "lastName": "Dreher",
+      "phoneNumber": "09122740478"
+    },
+    {
+      "firstName": "Ingo",
+      "lastName": "Krause",
+      "phoneNumber": "0368469505"
+    },
+    {
+      "firstName": "Jennifer",
+      "lastName": "Farber",
+      "phoneNumber": "06544105568"
+    },
+    {
+      "firstName": "Sophie",
+      "lastName": "Trommler",
+      "phoneNumber": "030708350"
+    },
+    {
+      "firstName": "Leander",
+      "lastName": "Bach",
+      "phoneNumber": "0431105442"
+    },
+    {
+      "firstName": "Lucas",
+      "lastName": "Konig",
+      "phoneNumber": "089780682"
+    },
+    {
+      "firstName": "Sophia",
+      "lastName": "Furst",
+      "phoneNumber": "0931356977"
+    },
+    {
+      "firstName": "Patrick",
+      "lastName": "Kohl",
+      "phoneNumber": "06589421541"
+    },
+    {
+      "firstName": "Andrea",
+      "lastName": "Daecher",
+      "phoneNumber": "08651549390"
+    },
+    {
+      "firstName": "Jörg",
+      "lastName": "Freud",
+      "phoneNumber": "08137914769"
+    },
+    {
+      "firstName": "Lena",
+      "lastName": "Reinhard",
+      "phoneNumber": "06323546327"
+    },
+    {
+      "firstName": "Klaus",
+      "lastName": "Papst",
+      "phoneNumber": "0821135491"
+    },
+    {
+      "firstName": "Nadine",
+      "lastName": "Kappel",
+      "phoneNumber": "0385151634"
+    },
+    {
+      "firstName": "Philipp",
+      "lastName": "Walter",
+      "phoneNumber": "08641601411"
+    },
+    {
+      "firstName": "Claudia",
+      "lastName": "Freytag",
+      "phoneNumber": "06581438768"
+    },
+    {
+      "firstName": "Christian",
+      "lastName": "Kaufmann",
+      "phoneNumber": "06071516558"
+    },
+    {
+      "firstName": "Luca",
+      "lastName": "Möller",
+      "phoneNumber": "09128458538"
+    },
+    {
+      "firstName": "Sabrina",
+      "lastName": "Kastner",
+      "phoneNumber": "09905261774"
+    },
+    {
+      "firstName": "Daniela",
+      "lastName": "Freytag",
+      "phoneNumber": "04961961150"
+    },
+    {
+      "firstName": "Frank",
+      "lastName": "Freud",
+      "phoneNumber": "07033623848"
+    },
+    {
+      "firstName": "Andrea",
+      "lastName": "Schaefer",
+      "phoneNumber": "0353257714"
+    },
+    {
+      "firstName": "Jörg",
+      "lastName": "Bergmann",
+      "phoneNumber": "06251773023"
+    },
+    {
+      "firstName": "Monika",
+      "lastName": "Bader",
+      "phoneNumber": "05462507333"
+    },
+    {
+      "firstName": "Phillipp",
+      "lastName": "Fuerst",
+      "phoneNumber": "06578816166"
+    },
+    {
+      "firstName": "Kathrin",
+      "lastName": "Faust",
+      "phoneNumber": "0906838526"
+    },
+    {
+      "firstName": "Sebastian",
+      "lastName": "Neumann",
+      "phoneNumber": "089956836"
+    },
+    {
+      "firstName": "Doreen",
+      "lastName": "Weissmuller",
+      "phoneNumber": "0391717874"
+    },
+    {
+      "firstName": "Philipp",
+      "lastName": "Herman",
+      "phoneNumber": "089780104"
+    },
+    {
+      "firstName": "Ulrike",
+      "lastName": "Urner",
+      "phoneNumber": "06471370519"
+    },
+    {
+      "firstName": "Paul",
+      "lastName": "Knippel",
+      "phoneNumber": "06554346217"
+    },
+    {
+      "firstName": "Klaudia",
+      "lastName": "Dreher",
+      "phoneNumber": "08708591281"
+    },
+    {
+      "firstName": "Mike",
+      "lastName": "Wannemaker",
+      "phoneNumber": "06432106251"
+    },
+    {
+      "firstName": "Stefanie",
+      "lastName": "Ebersbacher",
+      "phoneNumber": "09122416631"
+    },
+    {
+      "firstName": "Sophie",
+      "lastName": "Drechsler",
+      "phoneNumber": "0231256713"
+    }
+  ]
+}
