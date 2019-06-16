@@ -1,0 +1,86 @@
+.input-component {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  border-bottom: 1px solid $gray-light;
+  width: 100%;
+  fill: $gray-dark !important;
+
+  &__label {
+    padding-right: 5px;
+    font-size: 12px;
+    line-height: 16px;
+    padding-top: 2px;
+    color: $gray;
+  }
+
+  &__with-error {
+    .input-component,
+    .dd-header {
+      color: $danger;
+      border-bottom: 1px solid $danger !important;
+      fill: $danger !important;
+
+      input {
+        color: $danger;
+      }
+    }
+  }
+
+  svg {
+    margin: 4px 0 4px 8px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    background: transparent;
+    box-sizing: border-box;
+    border: 0;
+    height: 20px;
+    transition: all 0.3s;
+    color: $gray-dark;
+    flex: 1;
+
+    &::placeholder {
+      color: $gray-lightest;
+    }
+  }
+}
+
+.list-component {
+  margin-left: 2px;
+  font-size: 12px;
+
+  ul {
+    li {
+      margin-bottom: 0;
+      padding-bottom: 10px;
+      line-height: 9px;
+
+      &:before {
+        border-left: 1px dashed $oc-red-9;
+        content: '';
+        position: relative;
+        top: 17px;
+      }
+
+      &:last-child:before {
+        border-left: 0;
+        content: '';
+      }
+
+      span {
+        &:before {
+          color: $oc-red-9;
+          content: '●';
+          padding-right: 4px;
+          position: relative;
+          left: -5px;
+          top: 1px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}

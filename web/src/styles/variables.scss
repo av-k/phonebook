@@ -1,0 +1,24 @@
+@import 'vendors/open-color';
+
+$white: $oc-white;
+$black: $oc-black;
+$gray: $oc-gray-9;
+$gray-lightest: $oc-gray-0;
+$gray-light: $oc-gray-2;
+$gray-dark: $oc-gray-4;
+$gray-darkest: $oc-gray-8;
+$orange-lightest: $oc-orange-0;
+$orange-light: $oc-orange-2;
+$orange-dark: $oc-orange-4;
+$orange-darkest: $oc-orange-8;
+$danger: $oc-red-8;
+$font-secondary: 'Open Sans', Arial, sans-serif;
+$font-primary: 'Roboto', Arial, sans-serif;
+$input-height: 38px;
+$input-padding: 6px 14px;
+$input-border: 1px solid $gray-dark;
+$input-border-color: $gray-dark;
+$input-radius: 4px;
+$input-text-color: $gray-darkest;
+$input-font: $font-primary;
+$input-font-size: 18px;

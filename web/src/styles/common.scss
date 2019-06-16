@@ -1,0 +1,35 @@
+ul {
+  list-style-type: none;
+}
+
+h1, h2 {
+  font-weight: bold;
+  font-family: $font-primary;
+  color: $black;
+}
+
+h1 {
+  font-size: 38px;
+  line-height: 47px;
+}
+
+h2 {
+  font-size: 28px;
+  line-height: 36px;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: bold;
+}
+
+h4 {
+  font-family: $font-secondary;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+textarea {
+  font-family: inherit;
+}
