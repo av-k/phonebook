@@ -5,18 +5,21 @@ let axiosClient = null;
 
 class AxiosClient {
   _ACCESS_TOKEN;
-  _API_DOMAIN;
+  _API_HOST;
   _API_VERSION = 1;
 
   /**
    * Constructor
-   * @param {object} props - list of properties (_ACCESS_TOKEN, _API_DOMAIN, _API_VERSION and etc)
+   * @param {object} props - list of properties (_ACCESS_TOKEN, _API_HOST, _API_VERSION and etc)
    */
   constructor(props = {}) {
     Object.keys(props).forEach((propName) => this.setProperty(propName, props[propName]));
 
+    const baseURL = this._API_PORT
+      ? `http://${this._API_HOST}:${this._API_PORT}/v${this._API_VERSION}`
+      : `http://${this._API_HOST}/api/v${this._API_VERSION}`;
     const localAxios = axios.create({
-      baseURL: `${this._API_DOMAIN}/api/${this._API_VERSION}`,
+      baseURL,
       timeout: 25000
     });
 

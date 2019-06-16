@@ -2,7 +2,7 @@ import Vision from '@hapi/vision';
 import Inert from '@hapi/inert';
 import Blipp from 'blipp';
 import HapiSwagger from 'hapi-swagger';
-import Pack from '../../package';
+import config from '../config';
 
 /**
  * Router Initialization
@@ -16,7 +16,7 @@ export async function run(props = {}) {
     documentationPath: '/documentation',
     info: {
       title: 'API Documentation',
-      version: Pack.version
+      version: config.version
     }
   };
 

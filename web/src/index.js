@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Root } from 'pages';
 import * as axiosClient from 'utils/api/axiosClient';
-import { isDEV, API_DOMAIN, API_VERSION } from 'config/constants';
 import { getRandomString } from 'utils/helpers';
+import { isDEV, API_HOST, API_PORT, API_VERSION } from './config/constants';
 
 if (isDEV && module.hot) {
   module.hot.accept();
@@ -17,5 +17,5 @@ export const MOUNT_NODE = (() => {
   return element;
 })();
 
-axiosClient.init({ API_DOMAIN, API_VERSION });
+axiosClient.init({ API_HOST, API_PORT, API_VERSION });
 ReactDOM.render(<Root />, MOUNT_NODE);

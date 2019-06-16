@@ -18,8 +18,9 @@ const defaultEnvVariables = {
   }
 };
 const envVariables = Object.keys(process.env).reduce((accumulator, envName) => {
-  if (Object.keys(defaultEnvVariables).includes(envName)) {
-    accumulator[envName] = process.env[envName];
+  const localName = envName.replace(/^API_/, '');
+  if (Object.keys(defaultEnvVariables).includes(localName)) {
+    accumulator[localName] = process.env[envName];
   }
 
   return accumulator;

@@ -1,15 +1,20 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config(); // eslint-disable-line
+}
+
 const defaultEnvVariables = {
   NODE_ENV: 'development',
   HOST: '0.0.0.0',
   PORT: 3000,
-  APP_PREFIX: 'AP',
-  API_DOMAIN: '',
+  APP_PREFIX: '',
+  API_HOST: '',
   API_PORT: '',
-  API_VERSION: 1
+  API_VERSION: ''
 };
 const envVariables = Object.keys(process.env).reduce((accumulator, envName) => {
-  if (Object.keys(defaultEnvVariables).includes(envName)) {
-    accumulator[envName] = process.env[envName];
+  const localName = envName.replace(/^WEB_/, '');
+  if (Object.keys(defaultEnvVariables).includes(localName)) {
+    accumulator[localName] = process.env[envName];
   }
 
   return accumulator;

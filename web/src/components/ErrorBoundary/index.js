@@ -1,11 +1,10 @@
 import React from 'react';
-//
 import { StyledWrapper } from 'components/CommonStyledWrapper';
 import PT from 'prop-types';
 
 export class ErrorBoundary extends React.Component {
   static propTypes = {
-    children: PT.oneOfType([PT.element, PT.array]),
+    children: PT.oneOfType([PT.element, PT.array])
   };
 
   state = { error: null, errorInfo: null };
@@ -13,7 +12,7 @@ export class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
-      errorInfo,
+      errorInfo
     });
   }
 

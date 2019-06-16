@@ -7,22 +7,35 @@ services:
       dockerfile: Dockerfile
     volumes:
       - "./api/src:/app/src"
-    environment:
-      NODE_ENV: ${NODE_ENV}
-      VERSION: ${API_VERSION}
-      HOST: ${API_HOST}
-      PORT: ${API_PORT}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+    env_file: .env
     ports:
       - ${API_PORT}:${API_PORT}
     links:
       - db
     depends_on:
       - db
+
+  web:
+    container_name: phonebook_web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
+        HOST: ${WEB_HOST}
+        PORT: ${WEB_PORT}
+        API_HOST: ${API_HOST}
+        API_PORT: ${API_PORT}
+        API_VERSION: ${API_VERSION}
+    volumes:
+      - "./web/src:/app/src"
+    env_file: .env
+    ports:
+      - ${WEB_PORT}:${WEB_PORT}
+    links:
+      - api
+    depends_on:
+      - api
 
   db:
     container_name: phonebook_db

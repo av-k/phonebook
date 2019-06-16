@@ -21,3 +21,4 @@ npm-debug.log
 .tmp
 api/node_modules
 web/node_modules
+web/public

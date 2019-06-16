@@ -1,10 +1,8 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config(); // eslint-disable-line
-}
+const path = require('path');
 const webpack = require('webpack');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const { NODE_ENV, API_DOMAIN, API_VERSION, APP_PREFIX, isPROD, paths } = require('../config');
-const envVariables = { NODE_ENV, API_DOMAIN, API_VERSION, APP_PREFIX };
+const { NODE_ENV, API_HOST, API_PORT, API_VERSION, APP_PREFIX, isPROD, paths } = require('../config');
+const envVariables = { NODE_ENV, API_HOST, API_VERSION, APP_PREFIX };
 const echoEnvVariables = Object.keys(envVariables).map((variable, index) => (
   `\n ${JSON.stringify(`${variable} = ${envVariables[Object.keys(envVariables)[index]]}`)}`
   + (Object.keys(envVariables).length - 1 === index ? '\n' : '')
@@ -25,7 +23,8 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(NODE_ENV),
-        API_DOMAIN: JSON.stringify(API_DOMAIN),
+        API_HOST: JSON.stringify(API_HOST),
+        API_PORT: JSON.stringify(API_PORT),
         API_VERSION: JSON.stringify(API_VERSION),
         APP_PREFIX: JSON.stringify(APP_PREFIX),
       },
@@ -46,6 +45,21 @@ module.exports = {
         },
       },
       {
+        test: /\.(less)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {},
+              javascriptEnabled: true,
+            },
+          },
+        ],
+      },
+      {
         test: /\.(woff(2)?|ttf|eot|svg|png|jpg)(\?v=\d+\.\d+\.\d+)?$/,
         use: [{
           loader: 'file-loader',
@@ -59,6 +73,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      '@ant-design/icons/lib/dist$': path.resolve(__dirname, '../src/components/AntIcons/index.js'),
       'react-dom': '@hot-loader/react-dom',
       'assets': paths.resolveApp('src/assets/'),
       'pages': paths.resolveApp('src/pages/'),

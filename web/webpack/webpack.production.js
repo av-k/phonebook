@@ -80,17 +80,29 @@ module.exports = merge(common, {
             loader: 'sass-resources-loader',
             options: {
               // you can use variables in all sass|scss files without importing
-              resources: ['./src/styles/variables.scss'],
-            },
+              resources: ['./src/styles/variables.scss']
+            }
           },
         ]
-      }
-    ],
-  },
-  externals: function (context, request, callback) {
-    if (/xlsx|canvg|pdfmake/.test(request)) {
-      return callback(null, "commonjs " + request);
-    }
-    callback();
-  },
+      },
+      {
+        test: /\.(less)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {},
+          },
+          'css-loader',
+          'postcss-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {},
+              javascriptEnabled: true,
+            },
+          },
+        ],
+      },
+    ]
+  }
 });

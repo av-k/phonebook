@@ -7,7 +7,7 @@ const migrate = require('migrate');
 export async function run() {
   return new Promise((resolve, reject) => {
     migrate.load({
-      stateStore: '../.migrate'
+      stateStore: '../../.migrate'
     }, (error, set) => {
       if (error) {
         console.warn(`migrations unsuccessfully ran ${error}`); // eslint-disable-line

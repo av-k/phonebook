@@ -46,12 +46,12 @@ const Circle = (props) => {
 
 Circle.propTypes = {
   delay: PropTypes.number,
-  rotate: PropTypes.number,
+  rotate: PropTypes.number
 };
 
 Circle.defaultProps = {
   delay: null,
-  rotate: null,
+  rotate: null
 };
 
 export default Circle;

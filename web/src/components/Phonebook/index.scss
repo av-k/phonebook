@@ -1,0 +1,53 @@
+.phonebook {
+
+  .loader-indicator {
+    position: absolute;
+    top: calc(50%);
+    left: calc(50% - 20px);
+    margin: 0;
+    z-index: 3;
+  }
+
+  .ant-table-body {
+
+    .cell {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+
+      & > input {
+        width: 100%;
+      }
+
+    }
+
+    .cell-phone {
+      width: 160px;
+    }
+
+    .cell-fname {
+      width: 110px;
+    }
+
+    .cell-lname {
+      width: 110px;
+    }
+
+    .cell-actions {
+      width: 120px;
+
+      & > .anticon {
+        margin-right: 6px;
+        font-size: 24px;
+        cursor: pointer;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
+    }
+
+  }
+
+}
