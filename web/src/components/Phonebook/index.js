@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import mobileDevice from 'ismobilejs';
-import { Table, Pagination, Icon } from 'antd';
+import { Table, Pagination, Icon, Spin, Tooltip, Popconfirm, message } from 'antd';
 import { StyledWrapper } from 'components/CommonStyledWrapper';
-import LoadingIndicator from 'components/LoadingIndicator';
 import { getListOfContacts, updateContact, deleteContact } from 'utils/api/contacts';
 import { getProp } from 'utils/helpers';
 import './index.scss';
@@ -71,16 +70,29 @@ function getColumns(type = 'view', onEdit, onDelete, options = {}) {
       dataIndex: '_id',
       render: (id, record) => {
         const isEditMode = type === 'edit' && options.id === id;
+        const deleteText = 'Are you sure delete this contact?';
         return (
           <div className="cell cell-actions">
-            <Icon type="edit" theme="twoTone" twoToneColor={isEditMode ? '#2b8a3e' : '#000000'} title="Edit"
-                  style={{ fontSize: '24px' }} onClick={(e) => onEdit(e, { id })} />
+
+            <Tooltip placement="bottomRight" title="Edit">
+              <Icon type="edit" theme="twoTone" twoToneColor={isEditMode ? '#2b8a3e' : '#000000'}
+                    style={{ fontSize: '24px' }} onClick={(e) => onEdit(e, { id })} />
+            </Tooltip>
+
             {isEditMode && (
-              <Icon type="save" theme="twoTone" twoToneColor="#1c7ed6" title="Save"
-                    onClick={(e) => onEdit(e, { id, record, update: data[id] })} />
+              <Tooltip placement="bottomRight" title="Save">
+                <Icon type="save" theme="twoTone" twoToneColor="#1c7ed6"
+                      onClick={(e) => onEdit(e, { id, record, update: data[id] })} />
+              </Tooltip>
             )}
-            <Icon type="delete" theme="twoTone" title="Delete"
-                  twoToneColor="#c92a2a" onClick={(e) => onDelete(e, { id })} />
+
+            <Popconfirm placement="bottomRight" title={deleteText}
+                        onConfirm={(e) => onDelete(e, { id })} okText="Yes" cancelText="No">
+              <Tooltip placement="bottomRight" title="Delete">
+                <Icon type="delete" theme="twoTone" twoToneColor="#c92a2a" />
+              </Tooltip>
+            </Popconfirm>
+
           </div>
         );
       }
@@ -97,9 +109,9 @@ function fetchContacts(props) {
   return new Promise(async (resolve) => {
     const response = await getListOfContacts(props);
     if (response.status > 299) {
-      // toast.error(response.message || 'Unexpected Error, data not received.'); // FIXME
+      message.error(response.message || 'Unexpected Error, data not received.');
     } else if (getProp(response, 'results', 0) === 0) {
-      // toast.info('Data is empty!'); // FIXME
+      message.info('Data is empty!');
     }
     resolve(response);
   });
@@ -115,7 +127,7 @@ function updateContactHandler(id, data) {
   return new Promise(async (resolve) => {
     const response = await updateContact(id, data);
     if (response.status > 299) {
-      // toast.error(response.message || 'Unexpected Error, contact not updated.'); // FIXME
+      message.error(response.message || 'Unexpected Error, contact not updated.');
     }
     resolve(response);
   });
@@ -130,7 +142,7 @@ function deleteContactHandler(id) {
   return new Promise(async (resolve) => {
     const response = await deleteContact(id);
     if (response.status > 299) {
-      // toast.error(response.message || 'Unexpected Error, contact not deleted.'); // FIXME
+      message.error(response.message || 'Unexpected Error, contact not deleted.');
     }
     resolve(response);
   });
@@ -140,6 +152,30 @@ const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => console.log({selectedRowKeys, selectedRows}) // eslint-disable-line
 };
 
+/**
+ * Get table view
+ * @param {object} props - list of properties
+ * @returns {*} - table view
+ */
+function getTable(props = {}) {
+  const { page, limit, totalCount, columns, data, onChangePagination } = props;
+  return (
+    <Fragment>
+      {totalCount > 0 && (
+        <Pagination style={{ marginBottom: '30px', textAlign: 'center' }}
+                    defaultCurrent={page + 1}
+                    pageSize={limit}
+                    total={totalCount}
+                    onChange={onChangePagination} />
+      )}
+      <Table rowSelection={rowSelection}
+             columns={columns}
+             dataSource={data}
+             rowKey="_id"
+             pagination={false} />
+    </Fragment>
+  );
+}
 
 /**
  * Phonebook view
@@ -160,10 +196,12 @@ export function Phonebook() {
     position: 'relative',
     width: isMobile ? 'calc(100% - 40px)' : '640px'
   };
+  const table = getTable({ page, limit, totalCount, columns, data, onChangePagination });
 
+  //
   useEffect(() => {
     (async () => {
-      await fetchContactsHandler()
+      await fetchContactsHandler();
     })();
   }, [page]);
 
@@ -180,7 +218,7 @@ export function Phonebook() {
 
   // XHR Fetch Handler - change page
   async function onChangePagination(pageNum) {
-    setPage(pageNum);
+    setPage(pageNum - 1);
   }
 
   // Row data edit handler
@@ -194,7 +232,7 @@ export function Phonebook() {
       if (anyChanges) {
         const response = await updateContactHandler(id, update);
         if (!response.error) {
-          // toast.success('Contact was updated!'); // FIXME
+          message.success('Contact was updated!');
           await fetchContactsHandler(page);
         }
       }
@@ -210,31 +248,17 @@ export function Phonebook() {
 
   // Delete row handler
   async function onDeleteColumnHandler(event, { id }) {
-    const statement = window.confirm('Are You Sure?');
-    if (statement) {
-      const response = await deleteContactHandler(id);
-      if (!response.error) {
-        // toast.success('Contact was deleted!'); // FIXME
-        await fetchContactsHandler(page);
-      }
+    const response = await deleteContactHandler(id);
+    if (!response.error) {
+      message.success('Contact was deleted!');
+      await fetchContactsHandler(page);
     }
   }
 
   return (
     <StyledWrapper className="phonebook" style={style}>
-      {totalCount > 0 && (
-        <Pagination style={{ marginBottom: '30px', textAlign: 'center' }}
-                    defaultCurrent={page + 1}
-                    pageSize={limit}
-                    total={totalCount}
-                    onChange={onChangePagination} />
-      )}
-      <Table rowSelection={rowSelection}
-             columns={columns}
-             dataSource={data}
-             rowKey="_id"
-             pagination={false} />
-      {loading && <LoadingIndicator />}
+      {loading && (<Spin size="large" tip="Loading Contacts...">{table}</Spin>)}
+      {!loading && (table)}
     </StyledWrapper>
   );
 }
