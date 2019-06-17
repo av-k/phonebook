@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import mobileDevice from 'ismobilejs';
 import { Table, Pagination, Icon } from 'antd';
-import { toast } from 'react-toastify';
 import { StyledWrapper } from 'components/CommonStyledWrapper';
 import LoadingIndicator from 'components/LoadingIndicator';
 import { getListOfContacts, updateContact, deleteContact } from 'utils/api/contacts';
@@ -98,9 +97,9 @@ function fetchContacts(props) {
   return new Promise(async (resolve) => {
     const response = await getListOfContacts(props);
     if (response.status > 299) {
-      toast.error(response.message || 'Unexpected Error, data not received.');
+      // toast.error(response.message || 'Unexpected Error, data not received.'); // FIXME
     } else if (getProp(response, 'results', 0) === 0) {
-      toast.info('Data is empty!');
+      // toast.info('Data is empty!'); // FIXME
     }
     resolve(response);
   });
@@ -116,7 +115,7 @@ function updateContactHandler(id, data) {
   return new Promise(async (resolve) => {
     const response = await updateContact(id, data);
     if (response.status > 299) {
-      toast.error(response.message || 'Unexpected Error, contact not updated.');
+      // toast.error(response.message || 'Unexpected Error, contact not updated.'); // FIXME
     }
     resolve(response);
   });
@@ -131,7 +130,7 @@ function deleteContactHandler(id) {
   return new Promise(async (resolve) => {
     const response = await deleteContact(id);
     if (response.status > 299) {
-      toast.error(response.message || 'Unexpected Error, contact not deleted.');
+      // toast.error(response.message || 'Unexpected Error, contact not deleted.'); // FIXME
     }
     resolve(response);
   });
@@ -195,7 +194,7 @@ export function Phonebook() {
       if (anyChanges) {
         const response = await updateContactHandler(id, update);
         if (!response.error) {
-          toast.success('Contact was updated!');
+          // toast.success('Contact was updated!'); // FIXME
           await fetchContactsHandler(page);
         }
       }
@@ -215,7 +214,7 @@ export function Phonebook() {
     if (statement) {
       const response = await deleteContactHandler(id);
       if (!response.error) {
-        toast.success('Contact was deleted!');
+        // toast.success('Contact was deleted!'); // FIXME
         await fetchContactsHandler(page);
       }
     }

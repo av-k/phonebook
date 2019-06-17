@@ -1,4 +1,4 @@
-export { default as EditOutline } from '@ant-design/icons/lib/outline/EditOutline';
-export { default as SaveOutline } from '@ant-design/icons/lib/outline/SaveOutline';
-export { default as DeleteOutline } from '@ant-design/icons/lib/outline/DeleteOutline';
-export { default as UserAddOutline } from '@ant-design/icons/lib/outline/UserAddOutline';
+export { default as EditTwotone } from '@ant-design/icons/lib/twotone/EditTwotone';
+export { default as SaveTwotone } from '@ant-design/icons/lib/twotone/SaveTwotone';
+export { default as DeleteTwotone } from '@ant-design/icons/lib/twotone/DeleteTwotone';
+export { default as FileAddTwotone } from '@ant-design/icons/lib/twotone/FileAddTwotone';

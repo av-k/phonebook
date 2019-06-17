@@ -85,24 +85,6 @@ module.exports = merge(common, {
           },
         ]
       },
-      {
-        test: /\.(less)$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {},
-          },
-          'css-loader',
-          'postcss-loader',
-          {
-            loader: 'less-loader',
-            options: {
-              modifyVars: {},
-              javascriptEnabled: true,
-            },
-          },
-        ],
-      },
     ]
   }
 });

@@ -45,21 +45,6 @@ module.exports = {
         },
       },
       {
-        test: /\.(less)$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'postcss-loader',
-          {
-            loader: 'less-loader',
-            options: {
-              modifyVars: {},
-              javascriptEnabled: true,
-            },
-          },
-        ],
-      },
-      {
         test: /\.(woff(2)?|ttf|eot|svg|png|jpg)(\?v=\d+\.\d+\.\d+)?$/,
         use: [{
           loader: 'file-loader',
