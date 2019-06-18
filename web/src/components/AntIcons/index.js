@@ -5,3 +5,4 @@ export { default as FileAddTwotone } from '@ant-design/icons/lib/twotone/FileAdd
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';
 export { default as InfoCircleFill } from '@ant-design/icons/lib/fill/InfoCircleFill';
 export { default as ExclamationCircleFill } from '@ant-design/icons/lib/fill/ExclamationCircleFill';
+export { default as PlusCircleFill } from '@ant-design/icons/lib/twotone/PlusCircleTwotone';

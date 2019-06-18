@@ -13,6 +13,7 @@ if (isDEV && module.hot) {
 export const MOUNT_NODE = (() => {
   const element = document.createElement('div');
   element.id = `root_${getRandomString(12)}`;
+  element.classList = ['root'];
   document.body.appendChild(element);
   return element;
 })();

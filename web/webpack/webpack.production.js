@@ -80,7 +80,7 @@ module.exports = merge(common, {
             loader: 'sass-resources-loader',
             options: {
               // you can use variables in all sass|scss files without importing
-              resources: ['./src/styles/variables.scss']
+              resources: ['./src/styles/variables.scss', './src/styles/mixins.scss']
             }
           },
         ]

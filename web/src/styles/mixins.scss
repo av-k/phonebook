@@ -1,3 +1,5 @@
+@import 'variables';
+
 @mixin margins {
   @for $i from 1 through 100 {
     $margin: $i * 4px;
@@ -16,5 +18,40 @@
     .mb-#{$i} {
       margin-bottom: $margin;
     }
+  }
+}
+
+// Extra small devices
+@mixin xs-only {
+  @media (max-width: #{$screen-xs-max}) {
+    @content;
+  }
+}
+
+// Small devices
+@mixin sm-only {
+  @media (max-width: #{$screen-sm-max}) {
+    @content;
+  }
+}
+
+// Medium devices
+@mixin md-only {
+  @media (max-width: #{$screen-md-max}) {
+    @content;
+  }
+}
+
+// Large devices
+@mixin lg-up {
+  @media (min-width: #{$screen-lg-min}) {
+    @content;
+  }
+}
+
+// Custom
+@mixin rwd-only($screen) {
+  @media (max-width: $screen+'px') {
+    @content;
   }
 }

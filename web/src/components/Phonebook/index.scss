@@ -1,10 +1,16 @@
 .phonebook {
+  position: relative;
+  max-width: 680px;
 
-  & > .anticon-delete {
-    position: absolute;
-    top: 30px;
-    left: 9px;
-    font-size: 32px;
+  @include xs-only {
+    & {
+      padding: 0 20px;
+      max-width: inherit;
+    }
+  }
+
+  h1 {
+    margin: 0;
   }
 
   .loader-indicator {
@@ -15,18 +21,27 @@
     z-index: 3;
   }
 
-  .ant-table-body {
+  .table-wrapper {
+    position: relative;
 
-    .cell {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: inline-block;
+    & > .anticon-wrapper {
+      position: absolute;
+      top: -60px;
+      font-size: 32px;
+      cursor: pointer;
 
-      & > input {
-        width: 100%;
+      &.plus-circle {
+        right: 0;
       }
 
+      &.delete {
+        left: 0;
+      }
     }
+  }
+
+  .ant-table-wrapper {
+    background-color: $white;
 
     .cell-phone {
       width: 160px;
@@ -55,6 +70,19 @@
 
     }
 
+    .cell {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+
+      & > input {
+        width: 100%;
+      }
+
+      @include xs-only {
+        width: 100%;
+      }
+    }
   }
 
 }

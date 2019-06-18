@@ -22,7 +22,9 @@ body {
   text-rendering: geometricPrecision;
   line-height: 20px;
   color: $black;
-  background: $gray-lightest;
+  background-color: $gray-lightest;
+  background-image: url(/assets/images/bg_element.png);
+  background-repeat: repeat;
 }
 
 .content {
