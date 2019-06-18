@@ -4,22 +4,25 @@ import Mongodb from 'mongodb';
 import { getProp } from '../utils/helpers';
 
 /**
- * Handler for method DELETE - delete an exists contact
+ * Handler for method DELETE - delete list of exists contacts
  * @returns {object} - router config
  */
-export default function contactDelete() {
+export default function contactsDelete() {
   const { ObjectID } = Mongodb;
-
   async function handler(request) {
     const { db } = request.mongo;
-    const { id } = request.params;
+    const idsString = request.params.ids;
+    const ids = idsString
+      .replace(/(^\[|\]$)/g, '')
+      .split(',')
+      .map(idString => ObjectID(idString.trim()));
     const query = {
-      _id: { $eq: ObjectID(id) }
+      _id: { $in: ids }
     };
 
     try {
-      const deletedContact = await db.collection('contacts').deleteOne(query);
-      const success = !!getProp(deletedContact, 'deletedCount', 0);
+      const deletedContacts = await db.collection('contacts').deleteMany(query);
+      const success = !!getProp(deletedContacts, 'deletedCount', 0);
 
       return { success, data: null };
     } catch (err) {
@@ -29,10 +32,10 @@ export default function contactDelete() {
 
   return {
     method: 'DELETE',
-    path: '/contacts/{id}',
+    path: '/contacts/list/{ids}',
     config: {
       handler,
-      description: 'Delete an exists contact',
+      description: 'Delete list of exists contacts',
       tags: ['api'],
       plugins: {
         'hapi-swagger': {
@@ -41,7 +44,7 @@ export default function contactDelete() {
       },
       validate: {
         params: {
-          id: Joi.string().required()
+          ids: Joi.string().required()
         }
       }
     }

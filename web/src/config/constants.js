@@ -7,5 +7,6 @@ export const ROUTES = {
 export const API_ROUTES = {
   CONTACTS_LIST_GET: '/contacts/?pagination={pagination}&limit={limit}&page={page}',
   CONTACT_UPDATE: '/contacts/{id}',
-  CONTACT_DELETE: '/contacts/{id}'
+  CONTACT_DELETE: '/contacts/{id}',
+  CONTACT_LIST_DELETE: '/contacts/list/{ids}'
 };

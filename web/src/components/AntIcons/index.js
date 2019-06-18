@@ -4,3 +4,4 @@ export { default as DeleteTwotone } from '@ant-design/icons/lib/twotone/DeleteTw
 export { default as FileAddTwotone } from '@ant-design/icons/lib/twotone/FileAddTwotone';
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';
 export { default as InfoCircleFill } from '@ant-design/icons/lib/fill/InfoCircleFill';
+export { default as ExclamationCircleFill } from '@ant-design/icons/lib/fill/ExclamationCircleFill';

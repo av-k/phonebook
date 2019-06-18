@@ -1,5 +1,12 @@
 .phonebook {
 
+  & > .anticon-delete {
+    position: absolute;
+    top: 30px;
+    left: 9px;
+    font-size: 32px;
+  }
+
   .loader-indicator {
     position: absolute;
     top: calc(50%);

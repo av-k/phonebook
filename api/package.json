@@ -1,6 +1,6 @@
 {
   "name": "phonebook_api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "REST API for Phonebook Application",
   "main": "src/index.js",
   "scripts": {

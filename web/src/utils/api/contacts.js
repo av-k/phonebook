@@ -45,3 +45,15 @@ export const deleteContact = (id) => {
 
   return axios.delete(url);
 };
+
+/**
+ * Delete list of contacts
+ * @param {array} ids - list of contact identifications
+ * @returns {*} - axios request
+ */
+export const deleteContactList = (ids) => {
+  const axios = getAxios();
+  const url = API_ROUTES.CONTACT_LIST_DELETE.replace('{ids}', ids);
+
+  return axios.delete(url);
+};

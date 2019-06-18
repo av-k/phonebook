@@ -1,104 +1,11 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import mobileDevice from 'ismobilejs';
-import { Table, Pagination, Icon, Spin, Tooltip, Popconfirm, message } from 'antd';
+import { Spin, message } from 'antd';
 import { StyledWrapper } from 'components/CommonStyledWrapper';
-import { getListOfContacts, updateContact, deleteContact } from 'utils/api/contacts';
+import { getListOfContacts, updateContact, deleteContact, deleteContactList } from 'utils/api/contacts';
 import { getProp } from 'utils/helpers';
+import { getTable, getColumns } from './components/table';
 import './index.scss';
-
-/**
- * Get columns structure
- * @param {string} type - type of view
- * @param {*} onEdit - event handler for editing
- * @param {*} onDelete - event handler for deleting
- * @param {object} options - list of custom options
- * @returns {*[]} - columns structure
- */
-function getColumns(type = 'view', onEdit, onDelete, options = {}) {
-  const data = {};
-
-  return [
-    {
-      title: 'Phone Number',
-      dataIndex: 'phoneNumber',
-      render: (text, record = {}) => {
-        if (!data[record._id]) { data[record._id] = {}; }
-
-        let input = null;
-        if (type === 'edit' && options.id === record._id) {
-          input = <input defaultValue={text} onChange={(e) => data[record._id].phoneNumber = e.target.value} />;
-        } else {
-          input = <a href={`callto://${text}`}>{text}</a>;
-        }
-        return <div className="cell cell-phone">{input}</div>;
-      }
-    },
-    {
-      title: 'First Name',
-      dataIndex: 'firstName',
-      render: (text, record = {}) => {
-        if (!data[record._id]) { data[record._id] = {}; }
-        data[record._id].firstName = text;
-
-        let input = null;
-        if (type === 'edit' && options.id === record._id) {
-          input = <input defaultValue={text} onChange={(e) => data[record._id].firstName = e.target.value} />;
-        } else {
-          input = <a href={null}>{text}</a>; // eslint-disable-line
-        }
-        return <div className="cell cell-fname">{input}</div>;
-      }
-    },
-    {
-      title: 'Last Name',
-      dataIndex: 'lastName',
-      render: (text, record = {}) => {
-        if (!data[record._id]) { data[record._id] = {}; }
-        data[record._id].lastName = text;
-
-        let input = null;
-        if (type === 'edit' && options.id === record._id) {
-          input = <input defaultValue={text} onChange={(e) => data[record._id].lastName = e.target.value} />;
-        } else {
-          input = <a href={null}>{text}</a>; // eslint-disable-line
-        }
-        return <div className="cell cell-lname">{input}</div>;
-      }
-    },
-    {
-      title: '#',
-      dataIndex: '_id',
-      render: (id, record) => {
-        const isEditMode = type === 'edit' && options.id === id;
-        const deleteText = 'Are you sure delete this contact?';
-        return (
-          <div className="cell cell-actions">
-
-            <Tooltip placement="bottomRight" title="Edit">
-              <Icon type="edit" theme="twoTone" twoToneColor={isEditMode ? '#2b8a3e' : '#000000'}
-                    style={{ fontSize: '24px' }} onClick={(e) => onEdit(e, { id })} />
-            </Tooltip>
-
-            {isEditMode && (
-              <Tooltip placement="bottomRight" title="Save">
-                <Icon type="save" theme="twoTone" twoToneColor="#1c7ed6"
-                      onClick={(e) => onEdit(e, { id, record, update: data[id] })} />
-              </Tooltip>
-            )}
-
-            <Popconfirm placement="bottomRight" title={deleteText}
-                        onConfirm={(e) => onDelete(e, { id })} okText="Yes" cancelText="No">
-              <Tooltip placement="bottomRight" title="Delete">
-                <Icon type="delete" theme="twoTone" twoToneColor="#c92a2a" />
-              </Tooltip>
-            </Popconfirm>
-
-          </div>
-        );
-      }
-    }
-  ];
-}
 
 /**
  * Fetch contacts data
@@ -148,35 +55,6 @@ function deleteContactHandler(id) {
   });
 }
 
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => console.log({selectedRowKeys, selectedRows}) // eslint-disable-line
-};
-
-/**
- * Get table view
- * @param {object} props - list of properties
- * @returns {*} - table view
- */
-function getTable(props = {}) {
-  const { page, limit, totalCount, columns, data, onChangePagination } = props;
-  return (
-    <Fragment>
-      {totalCount > 0 && (
-        <Pagination style={{ marginBottom: '30px', textAlign: 'center' }}
-                    defaultCurrent={page + 1}
-                    pageSize={limit}
-                    total={totalCount}
-                    onChange={onChangePagination} />
-      )}
-      <Table rowSelection={rowSelection}
-             columns={columns}
-             dataSource={data}
-             rowKey="_id"
-             pagination={false} />
-    </Fragment>
-  );
-}
-
 /**
  * Phonebook view
  * @returns {*} - Phonebook view
@@ -191,12 +69,16 @@ export function Phonebook() {
   const [ data, setData ] = useState([]);
   const [ columnMode, setColumnMode ] = useState('view');
   const [ columnOptions, setColumnOptions ] = useState({});
-  const columns = getColumns(columnMode, onEditColumnHandler, onDeleteColumnHandler, columnOptions);
+  const [ deletableItems, setDeletableItems ] = useState(false);
+  const columns = getColumns(columnMode, onEditHandler, onDeleteHandler, columnOptions);
+  const table = getTable({
+    page, limit, totalCount, columns, data, deletable: deletableItems.length > 0,
+    onChangePagination, rowSelection: getRowSelection(), onDelete: onDeleteListHandler
+  });
   const style = {
     position: 'relative',
     width: isMobile ? 'calc(100% - 40px)' : '640px'
   };
-  const table = getTable({ page, limit, totalCount, columns, data, onChangePagination });
 
   //
   useEffect(() => {
@@ -218,11 +100,12 @@ export function Phonebook() {
 
   // XHR Fetch Handler - change page
   async function onChangePagination(pageNum) {
+    setDeletableItems([]);
     setPage(pageNum - 1);
   }
 
   // Row data edit handler
-  async function onEditColumnHandler(event, { id, record, update }) {
+  async function onEditHandler(event, { id, record, update }) {
     if (record && update) {
       const anyChanges = (
         record.phoneNumber !== update.phoneNumber
@@ -231,10 +114,11 @@ export function Phonebook() {
       );
       if (anyChanges) {
         const response = await updateContactHandler(id, update);
-        if (!response.error) {
-          message.success('Contact was updated!');
-          await fetchContactsHandler(page);
+        if (response.error) {
+          return message.error(response.message || 'Unexpected Error, Contact has been not edited.');
         }
+        message.success('Contact was updated!');
+        await fetchContactsHandler(page);
       }
     }
 
@@ -246,13 +130,35 @@ export function Phonebook() {
     setColumnOptions({ id });
   }
 
-  // Delete row handler
-  async function onDeleteColumnHandler(event, { id }) {
+  // Delete handler
+  async function onDeleteHandler(event, { id }) {
     const response = await deleteContactHandler(id);
-    if (!response.error) {
-      message.success('Contact was deleted!');
-      await fetchContactsHandler(page);
+    if (response.error) {
+      return message.error(response.message || 'Unexpected Error, Contact has been not deleted.');
     }
+
+    message.success('Contact was deleted!');
+    await fetchContactsHandler(page);
+  }
+
+  // Multiple delete handler
+  async function onDeleteListHandler() {
+    const response = await deleteContactList(deletableItems);
+    setDeletableItems([]);
+
+    if (response.error) {
+      return message.error(response.message || 'Unexpected Error, Contact list has been not deleted.');
+    }
+
+    message.success('Contacts was deleted!');
+    await fetchContactsHandler(page);
+  }
+
+  // Row selection handler
+  function getRowSelection() {
+    return {
+      onChange: (selectedRowKeys = []) => setDeletableItems(selectedRowKeys)
+    };
   }
 
   return (
