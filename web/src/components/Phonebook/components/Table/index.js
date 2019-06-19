@@ -59,33 +59,32 @@ export function getColumns(props = {}) {
       }
     },
     {
-      title: '#',
+      title: <Icon type="delete" />,
       dataIndex: '_id',
       render: (id, record) => {
         const isEditMode = type === 'edit' && options.id === id;
         const deleteText = 'Are you sure delete this contact?';
         return (
           <div className="cell cell-actions">
-
+            {/* EDIT BUTTON */}
             <Tooltip placement="bottomRight" title="Edit">
               <Icon type="edit" theme="twoTone" twoToneColor={isEditMode ? '#2b8a3e' : '#000000'}
                     style={{ fontSize: '24px' }} onClick={(e) => onEdit({ ...e, id })} />
             </Tooltip>
-
+            {/* SAVE BUTTON */}
             {isEditMode && (
               <Tooltip placement="bottomRight" title="Save">
                 <Icon type="save" theme="twoTone" twoToneColor="#1c7ed6"
                       onClick={(e) => onEdit({ ...e, id, record, update: data[id] })} />
               </Tooltip>
             )}
-
+            {/* DELETE BUTTON */}
             <Popconfirm placement="bottomRight" title={deleteText}
                         onConfirm={(e) => onDelete({ ...e, id })} okText="Yes" cancelText="No">
               <Tooltip placement="bottomRight" title="Delete">
                 <Icon type="delete" theme="twoTone" twoToneColor="#c92a2a" />
               </Tooltip>
             </Popconfirm>
-
           </div>
         );
       }
@@ -107,6 +106,7 @@ export function ContactsTable(props = {}) {
 
   return (
     <div className="table-wrapper">
+      {/* DELETE BUTTON */}
       {deletable && (
         <Popconfirm placement="bottomRight" title={deleteText}
                     onConfirm={onDelete} okText="Yes" cancelText="No">
@@ -116,18 +116,19 @@ export function ContactsTable(props = {}) {
           </span>
         </Popconfirm>
       )}
-
+      {/* ADD BUTTON */}
       <span className="anticon-wrapper plus-circle">
         <Icon type="plus-circle" theme="twoTone" onClick={onAdd} />
-        <span className="ant-badge">Add Contact</span>
+        <span className="ant-badge">Add Contacts</span>
       </span>
-
+      {/* TABLE */}
       <Table style={{ marginTop: '30px' }}
             rowSelection={rowSelection}
              columns={columns}
              dataSource={data}
              rowKey="_id"
              pagination={false} />
+      {/* PAGINATION */}
       {totalCount > 0 && (
         <Pagination style={{ marginTop: '30px', textAlign: 'center' }}
                     defaultCurrent={page + 1}

@@ -6,3 +6,5 @@ export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCirc
 export { default as InfoCircleFill } from '@ant-design/icons/lib/fill/InfoCircleFill';
 export { default as ExclamationCircleFill } from '@ant-design/icons/lib/fill/ExclamationCircleFill';
 export { default as PlusCircleFill } from '@ant-design/icons/lib/twotone/PlusCircleTwotone';
+export { default as UpOutline } from '@ant-design/icons/lib/outline/UpOutline';
+export { default as DownOutline } from '@ant-design/icons/lib/outline/DownOutline';

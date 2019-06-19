@@ -6,7 +6,7 @@ import { getAxios } from './axiosClient';
  * @param {object} props - list of properties
  * @returns {*} - axios request
  */
-export const getListOfContacts = (props = {}) => {
+export const getListOfContactsXHR = (props = {}) => {
   const axios = getAxios();
   const { pagination = false, limit = 0, page = 0 } = props;
   const url = API_ROUTES.CONTACTS_LIST_GET
@@ -18,18 +18,30 @@ export const getListOfContacts = (props = {}) => {
 };
 
 /**
+ * Create an contact
+ * @param {object} data - new contact data
+ * @returns {*} - axios request
+ */
+export const createContactXHR = (data = {}) => {
+  const axios = getAxios();
+  const url = API_ROUTES.CONTACT_CREATE;
+  const { firstName, lastName, phoneNumber } = data;
+  const payload = { firstName, lastName, phoneNumber };
+
+  return axios.post(url, payload);
+};
+
+/**
  * Update an contact
  * @param {string} id - contact identification
  * @param {object} data - new contact data
  * @returns {*} - axios request
  */
-export const updateContact = (id, data = {}) => {
+export const updateContactXHR = (id, data = {}) => {
   const axios = getAxios();
   const url = API_ROUTES.CONTACT_UPDATE.replace('{id}', id);
   const { firstName, lastName, phoneNumber } = data;
-  const payload = {
-    firstName, lastName, phoneNumber
-  };
+  const payload = { firstName, lastName, phoneNumber };
 
   return axios.put(url, payload);
 };
@@ -39,7 +51,7 @@ export const updateContact = (id, data = {}) => {
  * @param {string} id - contact identification
  * @returns {*} - axios request
  */
-export const deleteContact = (id) => {
+export const deleteContactXHR = (id) => {
   const axios = getAxios();
   const url = API_ROUTES.CONTACT_DELETE.replace('{id}', id);
 
@@ -51,7 +63,7 @@ export const deleteContact = (id) => {
  * @param {array} ids - list of contact identifications
  * @returns {*} - axios request
  */
-export const deleteContactList = (ids) => {
+export const deleteContactListXHR = (ids) => {
   const axios = getAxios();
   const url = API_ROUTES.CONTACT_LIST_DELETE.replace('{ids}', ids);
 

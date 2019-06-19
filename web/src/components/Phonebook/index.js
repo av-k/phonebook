@@ -1,28 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Spin, message } from 'antd';
 import { StyledWrapper } from 'components/CommonStyledWrapper';
-import { getListOfContacts, updateContact, deleteContact, deleteContactList } from 'utils/api/contacts';
+import {
+  getListOfContactsXHR, createContactXHR, updateContactXHR, deleteContactXHR, deleteContactListXHR
+} from 'utils/api/contacts';
 import { getProp } from 'utils/helpers';
 import { ContactsTable, getColumns } from './components/Table';
-import { AddContactsModal } from './components/AddContactModal'
+import { AddContactModal } from './components/AddContactModal'
 import './index.scss';
-
-/**
- * Fetch contacts data
- * @param {object} props - list of properties
- * @returns {Promise<any>} - Promise
- */
-function fetchContacts(props) {
-  return new Promise(async (resolve) => {
-    const response = await getListOfContacts(props);
-    if (response.status > 299) {
-      message.error(response.message || 'Unexpected Error, data not received.');
-    } else if (getProp(response, 'results', 0) === 0) {
-      message.info('Data is empty!');
-    }
-    resolve(response);
-  });
-}
 
 /**
  * XHR Fetch Handler
@@ -35,8 +20,15 @@ function fetchContacts(props) {
  */
 async function fetchContactsHandler({ page, limit, setLoading, setData, setTotalCount }) {
   setLoading(true);
-  const response = await fetchContacts({ pagination: true, page, limit });
+
+  const response = await getListOfContactsXHR({ pagination: true, page, limit });
   const results = getProp(response, 'results', []);
+
+  if (response.status > 299 || response.error) {
+    message.error(response.message || 'Unexpected Error, data not received.');
+  } else if (getProp(response, 'results', 0) === 0) {
+    message.info('Data is empty!');
+  }
 
   setLoading(false);
   setData(results);
@@ -44,42 +36,11 @@ async function fetchContactsHandler({ page, limit, setLoading, setData, setTotal
 }
 
 /**
- * Update an contact
- * @param {string} id - contact identification
- * @param {object} data - new contact data
- * @returns {Promise<any>} - Promise
- */
-function updateContactHandler(id, data) {
-  return new Promise(async (resolve) => {
-    const response = await updateContact(id, data);
-    if (response.status > 299) {
-      message.error(response.message || 'Unexpected Error, contact not updated.');
-    }
-    resolve(response);
-  });
-}
-
-/**
- * Delete an contact
- * @param {string} id - contact identification
- * @returns {Promise<any>} - Promise
- */
-function deleteContactHandler(id) {
-  return new Promise(async (resolve) => {
-    const response = await deleteContact(id);
-    if (response.status > 299) {
-      message.error(response.message || 'Unexpected Error, contact not deleted.');
-    }
-    resolve(response);
-  });
-}
-
-/**
  * Update contact handler
  * @param {object} event - extended event source
  * @returns {Promise<MessageType>} - Promise
  */
-async function onUpdate(event = {}) {
+async function updateContactHandler(event = {}) {
   const { id, record, update, columnMode, setColumnMode, setColumnOptions } = event;
 
   if (record && update) {
@@ -89,10 +50,12 @@ async function onUpdate(event = {}) {
       || record.lastName !== update.lastName
     );
     if (anyChanges) {
-      const response = await updateContactHandler(id, update);
-      if (response.error) {
+      const response = await updateContactXHR(id, update);
+
+      if (response.status > 299 || response.error) {
         return message.error(response.message || 'Unexpected Error, Contact has been not updated.');
       }
+
       message.success('Contact was updated!');
       await fetchContactsHandler(event);
     }
@@ -111,11 +74,11 @@ async function onUpdate(event = {}) {
  * @param {object} event - extended event source
  * @returns {Promise<MessageType>} - Promise
  */
-async function onDelete(event = {}) {
+async function deleteContactHandler(event = {}) {
   const { id } = event;
-  const response = await deleteContactHandler(id);
+  const response = await deleteContactXHR(id);
 
-  if (response.error) {
+  if (response.status > 299 || response.error) {
     return message.error(response.message || 'Unexpected Error, Contact has been not deleted.');
   }
 
@@ -128,12 +91,12 @@ async function onDelete(event = {}) {
  * @param {object} event - extended event source
  * @returns {Promise<MessageType>} - Promise
  */
-async function onDeleteList(event = {}) {
+async function deleteContactListHandler(event = {}) {
   const { deletableItems, setDeletableItems } = event;
-  const response = await deleteContactList(deletableItems);
+  const response = await deleteContactListXHR(deletableItems);
   setDeletableItems([]);
 
-  if (response.error) {
+  if (response.status > 299 || response.error) {
     return message.error(response.message || 'Unexpected Error, Contact list has been not deleted.');
   }
 
@@ -143,11 +106,19 @@ async function onDeleteList(event = {}) {
 
 /**
  * Add an new contact handler
- * @param {object} event - extended event source
+ * @param {object} props - list of properties
  * @returns {Promise<MessageType>} - Promise
  */
-function onAdd(event = {}) {
+async function createContactHandler(props = {}) {
+  const { values } = props;
+  const response = await createContactXHR(values);
 
+  if (response.error) {
+    return message.error(response.message || 'Unexpected Error, Contact has been not created.');
+  }
+
+  message.success('Contact was created!');
+  await fetchContactsHandler(props);
 }
 
 /**
@@ -203,15 +174,15 @@ export function Phonebook() {
   const columns = getColumns({
     type: columnMode,
     options: columnOptions,
-    onDelete: (event) => onDelete({ ...event, page, limit, ...rabbitHole }),
-    onEdit: (event) => onUpdate({ ...event, page, limit, columnMode, ...rabbitHole })
+    onDelete: (event) => deleteContactHandler({ ...event, page, limit, ...rabbitHole }),
+    onEdit: (event) => updateContactHandler({ ...event, page, limit, columnMode, ...rabbitHole })
   });
   const tableProps = {
     page, limit, totalCount, columns, data,
     deletable: deletableItems.length > 0,
     rowSelection: getRowSelection(rabbitHole),
     onChangePagination: (page) => onChangePagination({ page, ...rabbitHole }),
-    onDelete: (event) => onDeleteList({ ...event, deletableItems, page, limit, ...rabbitHole }),
+    onDelete: (event) => deleteContactListHandler({ ...event, deletableItems, page, limit, ...rabbitHole }),
     onAdd: () => setAddPopupVisibility(true)
   };
 
@@ -225,8 +196,11 @@ export function Phonebook() {
   return (
     <StyledWrapper className="phonebook">
       <h1>My Phonebook</h1>
-      <AddContactsModal visible={addPopupVisibility}
-                        onOk={() => { setAddPopupVisibility(false) }}
+      <AddContactModal visible={addPopupVisibility}
+                        onSubmit={(values) => {
+                          setAddPopupVisibility(false);
+                          createContactHandler({ values, page, limit, ...rabbitHole });
+                        }}
                         onCancel={() => { setAddPopupVisibility(false) }} />
       {loading && (<Spin size="large" tip="Loading Contacts..."><ContactsTable {...tableProps} /></Spin>)}
       {!loading && (<ContactsTable {...tableProps} />)}
