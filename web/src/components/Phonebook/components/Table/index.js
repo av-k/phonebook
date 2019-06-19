@@ -117,8 +117,8 @@ export function ContactsTable(props = {}) {
         </Popconfirm>
       )}
       {/* ADD BUTTON */}
-      <span className="anticon-wrapper plus-circle">
-        <Icon type="plus-circle" theme="twoTone" onClick={onAdd} />
+      <span className="anticon-wrapper plus-circle" onClick={onAdd}>
+        <Icon type="plus-circle" theme="twoTone" />
         <span className="ant-badge">Add Contacts</span>
       </span>
       {/* TABLE */}

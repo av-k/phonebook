@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Modal } from 'antd';
 import { AddContactForm } from '../AddContactForm';
+import { getProp } from 'utils/helpers';
 
 /**
  * On click OK handler
@@ -10,15 +11,21 @@ import { AddContactForm } from '../AddContactForm';
 function onOk(props = {}) {
   const { form, onSubmit } = props;
   form.current.validateFields((errors, values) => {
-    if (errors) { return; }
-
     const { phoneNumberPrefix, phoneNumber, firstName, lastName } = values;
+    const files = getProp(values, 'files', []);
 
-    onSubmit({
-      phoneNumber: `${phoneNumberPrefix}${phoneNumber}`,
-      firstName,
-      lastName
-    });
+    if (getProp(values, 'files', []).length > 0) {
+      onSubmit({ file: files[0].originFileObj });
+    } else if (errors) {
+      return;
+    } else {
+      onSubmit({
+        phoneNumber: `${phoneNumberPrefix}${phoneNumber}`,
+        firstName,
+        lastName
+      });
+    }
+
     form.current.resetFields();
   });
 }
@@ -39,7 +46,7 @@ export function AddContactModal(props) {
       onOk={() => { onOk({ onSubmit, form: formInstance }); }}
       onCancel={onCancel}
     >
-      <AddContactForm ref={formInstance} onSubmit={onSubmit} />
+      <AddContactForm ref={formInstance} />
     </Modal>
   );
 }

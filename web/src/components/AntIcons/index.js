@@ -7,4 +7,6 @@ export { default as InfoCircleFill } from '@ant-design/icons/lib/fill/InfoCircle
 export { default as ExclamationCircleFill } from '@ant-design/icons/lib/fill/ExclamationCircleFill';
 export { default as PlusCircleFill } from '@ant-design/icons/lib/twotone/PlusCircleTwotone';
 export { default as UpOutline } from '@ant-design/icons/lib/outline/UpOutline';
-export { default as DownOutline } from '@ant-design/icons/lib/outline/DownOutline';
+export { default as InboxOutline } from '@ant-design/icons/lib/outline/InboxOutline';
+export { default as CloseOutline } from '@ant-design/icons/lib/outline/CloseOutline';
+export { default as PaperClipOutline } from '@ant-design/icons/lib/outline/PaperClipOutline';

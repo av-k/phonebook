@@ -1,4 +1,5 @@
 *.csv
+!demo/contacts.csv
 *.dat
 *.iml
 *.log

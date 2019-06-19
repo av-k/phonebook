@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Spin, message } from 'antd';
 import { StyledWrapper } from 'components/CommonStyledWrapper';
 import {
-  getListOfContactsXHR, createContactXHR, updateContactXHR, deleteContactXHR, deleteContactListXHR
+  getListOfContactsXHR, createContactXHR, uploadContactsListXHR,
+  updateContactXHR, deleteContactXHR, deleteContactListXHR
 } from 'utils/api/contacts';
 import { getProp } from 'utils/helpers';
 import { ContactsTable, getColumns } from './components/Table';
@@ -110,14 +111,29 @@ async function deleteContactListHandler(event = {}) {
  * @returns {Promise<MessageType>} - Promise
  */
 async function createContactHandler(props = {}) {
-  const { values } = props;
-  const response = await createContactXHR(values);
+  const { values, setAddPopupVisibility } = props;
+  const { file } = values;
 
-  if (response.error) {
-    return message.error(response.message || 'Unexpected Error, Contact has been not created.');
+  setAddPopupVisibility(false);
+
+  if (file) { // Only file upload logic
+    const response = await uploadContactsListXHR(values);
+
+    if (response.error) {
+      return message.error(response.message || 'Unexpected Error, Contact has been not created.');
+    }
+
+    message.info('Upload functionality is not fully implemented'); // FIXME
+  } else { // Common fields
+    const response = await createContactXHR(values);
+
+    if (response.error) {
+      return message.error(response.message || 'Unexpected Error, Contact has been not created.');
+    }
+
+    message.success('Contact was created!');
   }
 
-  message.success('Contact was created!');
   await fetchContactsHandler(props);
 }
 
@@ -197,10 +213,7 @@ export function Phonebook() {
     <StyledWrapper className="phonebook">
       <h1>My Phonebook</h1>
       <AddContactModal visible={addPopupVisibility}
-                        onSubmit={(values) => {
-                          setAddPopupVisibility(false);
-                          createContactHandler({ values, page, limit, ...rabbitHole });
-                        }}
+                        onSubmit={(values) => createContactHandler({ values, page, limit, ...rabbitHole }) }
                         onCancel={() => { setAddPopupVisibility(false) }} />
       {loading && (<Spin size="large" tip="Loading Contacts..."><ContactsTable {...tableProps} /></Spin>)}
       {!loading && (<ContactsTable {...tableProps} />)}
