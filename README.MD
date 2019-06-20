@@ -2,6 +2,8 @@
 
 This repo contains the source code of **Phonebook** web application. Here there is a list of features what also can be used in further projects. 
 
+![ScreenShot](https://user-images.githubusercontent.com/14048639/59875571-46fada80-93cb-11e9-99e4-3daa006a4ddd.png)
+
 ### Technology stack:
 * [NodeJS](https://nodejs.org/)
 * [Hapi.js](https://hapijs.com/)
@@ -57,7 +59,7 @@ npm run migrate down
 ```
 
 ### Demo files
-* The list of 30 contacts [contacts.csv](https://github.com/av-k/phonebook/blob/master/demo/contacts.csv)
+* The list of 30 contacts [contacts.csv](https://github.com/av-k/phonebook/blob/master/tmp/contacts.csv)
 
 ## Documentation
 

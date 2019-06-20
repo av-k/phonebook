@@ -29,11 +29,19 @@ export default function contactCreate() {
     };
 
     try {
+      const found = await db.collection('contacts').findOne(findOneAndUpdateFilter);
+      if (found) {
+        return {
+          success: false,
+          data: null,
+          error: 'Contact is already exists, instead create use update!',
+          message: 'Contact is already exists, instead create use update!'
+        };
+      }
       const foundAndUpdated = await db.collection('contacts')
         .findOneAndUpdate(findOneAndUpdateFilter, newContact, findOneAndUpdateOptions);
       const success = true;
       const data = getProp(foundAndUpdated, 'value', {});
-
       return { success, data };
     } catch (err) {
       throw Boom.internal('Internal MongoDB error', err);

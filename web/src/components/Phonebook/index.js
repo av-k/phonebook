@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Spin, message } from 'antd';
 import { StyledWrapper } from 'components/CommonStyledWrapper';
 import {
-  getListOfContactsXHR, createContactXHR, uploadContactsListXHR,
+  getListOfContactsXHR, createContactXHR, createContactListXHR, uploadContactsListXHR,
   updateContactXHR, deleteContactXHR, deleteContactListXHR
 } from 'utils/api/contacts';
 import { getProp } from 'utils/helpers';
 import { ContactsTable, getColumns } from './components/Table';
 import { AddContactModal } from './components/AddContactModal'
+import { MergeContactsModal } from './components/MergeContacts';
 import './index.scss';
 
 /**
@@ -23,7 +24,13 @@ async function fetchContactsHandler({ page, limit, setLoading, setData, setTotal
   setLoading(true);
 
   const response = await getListOfContactsXHR({ pagination: true, page, limit });
-  const results = getProp(response, 'results', []);
+
+  if (!response) {
+    message.info('Server data is not available, please try later!');
+    return;
+  }
+
+  const results = getProp(response, 'results') || [];
 
   if (response.status > 299 || response.error) {
     message.error(response.message || 'Unexpected Error, data not received.');
@@ -95,6 +102,7 @@ async function deleteContactHandler(event = {}) {
 async function deleteContactListHandler(event = {}) {
   const { deletableItems, setDeletableItems } = event;
   const response = await deleteContactListXHR(deletableItems);
+
   setDeletableItems([]);
 
   if (response.status > 299 || response.error) {
@@ -126,21 +134,51 @@ async function createContactHandler(props = {}) {
 }
 
 /**
+ * Multiple create contact handler
+ * @param {object} props - list of properties
+ * @returns {Promise<MessageType>} - Promise
+ */
+async function createContactListHandler(props = {}) {
+  const { values, setMergePopupVisibility, setConflictItems, setNewItems } = props;
+  const response = await createContactListXHR(values);
+
+  setNewItems([]);
+  setConflictItems([]);
+  setMergePopupVisibility(false);
+
+  if (response.status > 299 || response.error) {
+    return message.error(response.message || 'Unexpected Error, Contact list has been not added.');
+  }
+
+  message.success('Contact list was added!');
+  await fetchContactsHandler(props);
+}
+
+/**
  * Multiple creation list of contact handler with files upload
  * @param {object} props - list of properties
  * @returns {Promise<MessageType>} - Promise
  */
 async function uploadFilesWithContactsHandler(props = {}) {
-  const { values, setAddPopupVisibility } = props;
+  const { values, setAddPopupVisibility, setMergePopupVisibility, setConflictItems, setNewItems } = props;
   setAddPopupVisibility(false);
 
   const response = await uploadContactsListXHR(values);
+  const originals = getProp(response, 'data.originals');
+  const newbies = getProp(response, 'data.newbies');
+  const conflicts = getProp(response, 'data.conflicts');
 
   if (response.error) {
-    return message.error(response.message || 'Unexpected Error, Contacts has been not created.');
+    return message.error(response.message || 'Unexpected Error, upload is fail.');
   }
 
-  message.info('Upload functionality is not fully implemented'); // FIXME
+  if (Array.isArray(conflicts) && conflicts.length > 0) {
+    setNewItems(newbies);
+    setConflictItems({ originals, conflicts });
+    setMergePopupVisibility(true);
+  } else {
+    message.info('Upload is success, all records was added.');
+  }
 
   await fetchContactsHandler(props);
 }
@@ -181,6 +219,9 @@ export function Phonebook() {
   const [ page, setPage ] = useState(0);
   const [ totalCount, setTotalCount ] = useState(0);
   const [ addPopupVisibility, setAddPopupVisibility ] = useState(false);
+  const [ mergePopupVisibility, setMergePopupVisibility ] = useState(false);
+  const [ conflictItems, setConflictItems ] = useState([]);
+  const [ newItems, setNewItems ] = useState([]);
   const [ data, setData ] = useState([]);
   const [ columnMode, setColumnMode ] = useState('view');
   const [ columnOptions, setColumnOptions ] = useState({});
@@ -193,7 +234,10 @@ export function Phonebook() {
     setColumnOptions: (props) => setColumnOptions(props),
     setDeletableItems: (props) => setDeletableItems(props),
     setTotalCount: (props) => setTotalCount(props),
-    setAddPopupVisibility: (props) => setAddPopupVisibility(props)
+    setAddPopupVisibility: (props) => setAddPopupVisibility(props),
+    setMergePopupVisibility: (props) => setMergePopupVisibility(props),
+    setConflictItems: (props) => setConflictItems(props),
+    setNewItems: (props) => setNewItems(props)
   };
   const columns = getColumns({
     type: columnMode,
@@ -217,6 +261,15 @@ export function Phonebook() {
     })();
   }, [page]);
 
+  const getConflictPairs = ((data = {}) => {
+    const { originals = [], conflicts = [] } = data;
+    return conflicts.reduce((accumulator, conflictItem) => {
+      const pairItem = originals.find(originalItem => originalItem.phoneNumber === conflictItem.phoneNumber);
+      accumulator.push({ original: pairItem, conflict: conflictItem });
+      return accumulator;
+    }, []);
+  });
+
   return (
     <StyledWrapper className="phonebook">
       <h1>My Phonebook</h1>
@@ -226,6 +279,14 @@ export function Phonebook() {
                           if (values.files) uploadFilesWithContactsHandler({ values, page, limit, ...rabbitHole });
                         }}
                         onCancel={() => { setAddPopupVisibility(false) }} />
+      {/* MERGE POPUP START */}
+      <MergeContactsModal visible={mergePopupVisibility}
+                          data={getConflictPairs(conflictItems)}
+                          onSubmit={(values) => {
+                            createContactListHandler({ values: [...newItems, ...values], page, limit, ...rabbitHole })
+                          }}
+                          onCancel={() => { setAddPopupVisibility(false) }} />
+      {/* MERGE POPUP END */}
       {loading && (<Spin size="large" tip="Loading Contacts..."><ContactsTable {...tableProps} /></Spin>)}
       {!loading && (<ContactsTable {...tableProps} />)}
     </StyledWrapper>

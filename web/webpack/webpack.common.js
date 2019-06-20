@@ -58,8 +58,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@ant-design/icons/lib/dist$': path.resolve(__dirname, '../src/components/AntIcons/index.js'),
-      'react-dom': '@hot-loader/react-dom',
+      // '@ant-design/icons/lib/dist$': path.resolve(__dirname, '../src/components/AntIcons/index.js'),
       'assets': paths.resolveApp('src/assets/'),
       'pages': paths.resolveApp('src/pages/'),
       'components': paths.resolveApp('src/components/'),

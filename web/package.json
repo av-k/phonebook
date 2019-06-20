@@ -1,6 +1,6 @@
 {
   "name": "phonebook_web",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Web Client for Phonebook Application",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,6 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-react-hooks": "^1.6.0",
-    "react-hot-loader": "^4.9.0",
     "serve": "^11.0.0",
     "stylelint": "^10.1.0",
     "stylelint-config-prettier": "^5.2.0",
@@ -82,6 +81,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
+    "react-hot-loader": "^4.11.1",
     "react-router-dom": "^5.0.1",
     "sass-loader": "^7.1.0",
     "sass-resources-loader": "^2.0.1",

@@ -10,11 +10,11 @@ export const AddContactForm = Form.create({ name: 'addContact' })((props = {}) =
   const { ref, form } = props;
   const { getFieldDecorator } = form;
   const phonePrefixSelector = getFieldDecorator('phoneNumberPrefix', {
-    initialValue: '49'
+    initialValue: '+49'
   })(
     <Select style={{ width: 70 }}>
-      <Select.Option value="49">+49</Select.Option>
-      <Select.Option value="31">+31</Select.Option>
+      <Select.Option value="+49">+49</Select.Option>
+      <Select.Option value="+31">+31</Select.Option>
     </Select>
   );
 

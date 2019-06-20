@@ -6,7 +6,7 @@ import config from '../config';
  * Get validate params for request
  * @returns {*}
  */
-function getValidateParams() {
+export function getValidateParams() {
   const { VALIDATION } = config;
   const contact = Joi.object().keys({
     firstName: Joi.string().required(),
@@ -19,6 +19,46 @@ function getValidateParams() {
 }
 
 /**
+ * Insert list of contact into DB
+ * @param {*} db - db instance
+ * @param {array} list - list of contacts
+ * @returns {Promise<*>} - promise
+ */
+export async function insertList({ db, list = [] }) {
+  const nowISO = new Date().toISOString();
+  const ops = [];
+
+  list.forEach((item) => {
+    ops.push(
+      {
+        updateOne: {
+          filter: { phoneNumber: { $eq: item.phoneNumber } },
+          update: {
+            $set: { ...item, createdAt: nowISO, updatedAt: nowISO }
+          },
+          upsert: true
+        }
+      }
+    );
+  });
+  return new Promise(async (resolve) => {
+    const results = await new Promise((res, ref) => {
+      db.collection('contacts').bulkWrite(ops, { ordered: false }, (err, r) => {
+        if (err) { ref(err); }
+        res(r);
+      });
+    });
+    const {
+      nInserted, nMatched, nModified, nRemoved, upserted
+    } = results;
+    const data = {
+      nInserted, nMatched, nModified, nRemoved, upserted
+    };
+    resolve(data);
+  });
+}
+
+/**
  * Handler for method POST - create list of contacts
  * @returns {object} - router config
  */
@@ -26,39 +66,10 @@ export default function contactsListCreate() {
   async function handler(request) {
     const { db } = request.mongo;
     const { list } = request.payload;
-    const nowISO = new Date().toISOString();
-    const ops = [];
-
-    list.forEach((item) => {
-      ops.push(
-        {
-          updateOne: {
-            filter: { phoneNumber: { $eq: item.phoneNumber } },
-            update: {
-              $set: { ...item, createdAt: nowISO, updatedAt: nowISO }
-            },
-            upsert: true
-          }
-        }
-      );
-    });
 
     try {
-      const results = await new Promise((resolve, reject) => {
-        db.collection('contacts').bulkWrite(ops, { ordered: false }, (err, r) => {
-          if (err) reject(err);
-          resolve(r);
-        });
-      });
-      const success = true;
-      const {
-        nInserted, nMatched, nModified, nRemoved, upserted
-      } = results;
-      const data = {
-        nInserted, nMatched, nModified, nRemoved, upserted
-      };
-
-      return { success, data };
+      const data = await insertList({ db, list });
+      return { success: true, data };
     } catch (err) {
       throw Boom.internal('Internal MongoDB error', err);
     }

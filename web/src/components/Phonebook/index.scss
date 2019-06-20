@@ -9,6 +9,7 @@
     }
   }
 
+  // Common
   h1 {
     margin: 0;
   }
@@ -21,6 +22,7 @@
     z-index: 3;
   }
 
+  // Table
   .table-wrapper {
     position: relative;
 
@@ -83,6 +85,16 @@
         width: 100%;
       }
     }
+  }
+}
+
+// Modal Conflicts
+.merge-contacts-modal {
+
+  .ant-form {
+    padding-right: 20px;
+    max-height: 520px;
+    overflow-y: scroll;
   }
 
 }

@@ -1,0 +1,18 @@
+.merge-contacts-form {
+
+  .aside-input-title {
+    float: left;
+    width: 50px;
+    font-weight: 700;
+
+    &-new {
+      color: $oc-red-7;
+    }
+
+    & + input, & + span {
+      width: calc(100% - 50px) !important;
+    }
+
+  }
+
+}

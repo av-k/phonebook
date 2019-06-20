@@ -11,6 +11,7 @@ export const VALIDATION = {
 export const API_ROUTES = {
   CONTACTS_LIST_GET: '/contacts/?pagination={pagination}&limit={limit}&page={page}',
   CONTACT_CREATE: '/contacts/',
+  CONTACT_LIST_CREATE: '/contacts/list/',
   CONTACT_LIST_UPLOAD: '/contacts/list/upload/',
   CONTACT_UPDATE: '/contacts/{id}',
   CONTACT_DELETE: '/contacts/{id}',

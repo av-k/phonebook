@@ -32,6 +32,18 @@ export const createContactXHR = (data = {}) => {
 };
 
 /**
+ * Create list of contacts
+ * @param {array} data - list of contact
+ * @returns {*} - axios request
+ */
+export const createContactListXHR = (data = []) => {
+  const axios = getAxios();
+  const url = API_ROUTES.CONTACT_LIST_CREATE;
+
+  return axios.post(url, { list: data });
+};
+
+/**
  * Upload an file with list of contacts
  * @param {object} data - new contact data
  * @returns {*} - axios request
