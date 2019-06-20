@@ -112,27 +112,35 @@ async function deleteContactListHandler(event = {}) {
  */
 async function createContactHandler(props = {}) {
   const { values, setAddPopupVisibility } = props;
-  const { file } = values;
 
   setAddPopupVisibility(false);
 
-  if (file) { // Only file upload logic
-    const response = await uploadContactsListXHR(values);
+  const response = await createContactXHR(values);
 
-    if (response.error) {
-      return message.error(response.message || 'Unexpected Error, Contact has been not created.');
-    }
-
-    message.info('Upload functionality is not fully implemented'); // FIXME
-  } else { // Common fields
-    const response = await createContactXHR(values);
-
-    if (response.error) {
-      return message.error(response.message || 'Unexpected Error, Contact has been not created.');
-    }
-
-    message.success('Contact was created!');
+  if (response.error) {
+    return message.error(response.message || 'Unexpected Error, Contact list has been not uploaded.');
   }
+
+  message.success('Contacts was uploaded!');
+  await fetchContactsHandler(props);
+}
+
+/**
+ * Multiple creation list of contact handler with files upload
+ * @param {object} props - list of properties
+ * @returns {Promise<MessageType>} - Promise
+ */
+async function uploadFilesWithContactsHandler(props = {}) {
+  const { values, setAddPopupVisibility } = props;
+  setAddPopupVisibility(false);
+
+  const response = await uploadContactsListXHR(values);
+
+  if (response.error) {
+    return message.error(response.message || 'Unexpected Error, Contacts has been not created.');
+  }
+
+  message.info('Upload functionality is not fully implemented'); // FIXME
 
   await fetchContactsHandler(props);
 }
@@ -213,7 +221,10 @@ export function Phonebook() {
     <StyledWrapper className="phonebook">
       <h1>My Phonebook</h1>
       <AddContactModal visible={addPopupVisibility}
-                        onSubmit={(values) => createContactHandler({ values, page, limit, ...rabbitHole }) }
+                        onSubmit={(values) => {
+                          if (!values.files) createContactHandler({ values, page, limit, ...rabbitHole });
+                          if (values.files) uploadFilesWithContactsHandler({ values, page, limit, ...rabbitHole });
+                        }}
                         onCancel={() => { setAddPopupVisibility(false) }} />
       {loading && (<Spin size="large" tip="Loading Contacts..."><ContactsTable {...tableProps} /></Spin>)}
       {!loading && (<ContactsTable {...tableProps} />)}

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Modal } from 'antd';
-import { AddContactForm } from '../AddContactForm';
 import { getProp } from 'utils/helpers';
+import { AddContactForm } from '../AddContactForm';
 
 /**
  * On click OK handler
@@ -15,7 +15,7 @@ function onOk(props = {}) {
     const files = getProp(values, 'files', []);
 
     if (getProp(values, 'files', []).length > 0) {
-      onSubmit({ file: files[0].originFileObj });
+      onSubmit({ files: files.map(file => file.originFileObj) });
     } else if (errors) {
       return;
     } else {

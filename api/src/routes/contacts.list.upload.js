@@ -10,14 +10,22 @@ export default function contactsListUpload() {
   async function handler(request) {
     const { db } = request.mongo;
     const { payload = {} } = request;
-    const { file } = payload;
-    if (!file) {
-      throw Boom.internal('Upload file not exists in request body');
+    const listOfFiles = Object.keys(payload).reduce((accumulator, key) => {
+      if (/^file/i.test(key)) { accumulator.push(payload[key]); }
+      return accumulator;
+    }, []);
+
+    if (listOfFiles.length === 0) {
+      throw Boom.internal('Upload files not exists in request body');
     }
 
     try {
       const results = await new Promise(async (resolve, reject) => {
-        const jsonArray = await csv().fromStream(file);
+        const jsonArrays = await Promise.all(listOfFiles.map(file => csv().fromStream(file)));
+        const jsonArray = jsonArrays.reduce((accumulator, arr) => {
+          accumulator = accumulator.concat(arr);
+          return accumulator;
+        }, []);
         const phonesList = [];
         const original = jsonArray.reduce((accumulator, item) => {
           if (!item.first_name || !item.last_name || !item.phone) { return accumulator; }
@@ -36,6 +44,7 @@ export default function contactsListUpload() {
             if (err) { return reject(new Error(`Internal MongoDB error ${err}`)); }
             return resolve({ original, conflicts });
           });
+        // In an ideal world here should be implemented logic with additional collection `conflicts`
       });
       return { success: true, data: results };
     } catch (err) {
