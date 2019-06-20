@@ -12,11 +12,12 @@ export default function contactCreate() {
 
   async function handler(request) {
     const { db } = request.mongo;
+    const nowISO = new Date().toISOString();
     const newContact = {
       $set: {
         ...request.payload,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        createdAt: nowISO,
+        updatedAt: nowISO
       }
     };
     const findOneAndUpdateFilter = {

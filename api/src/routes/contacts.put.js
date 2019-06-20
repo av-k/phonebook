@@ -16,7 +16,7 @@ export default function contactUpdate() {
     const contact = {
       $set: {
         ...request.payload,
-        updatedAt: new Date()
+        updatedAt: new Date().toISOString()
       }
     };
     const findOneAndUpdateFilter = {

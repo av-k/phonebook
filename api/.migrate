@@ -1,9 +1,9 @@
 {
-  "lastRun": "1560674577013-add-contacts.js",
+  "lastRun": null,
   "migrations": [
     {
       "title": "1560674577013-add-contacts.js",
-      "timestamp": 1560879556327
+      "timestamp": null
     }
   ]
 }

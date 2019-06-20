@@ -28,7 +28,12 @@ module.exports.up = async (next) => {
   if (!db.collection) { return next(db); } // Error
   const countRecords = await db.collection('contacts').find({}).count();
   if (countRecords > 0) { return next(); }
-  await db.collection('contacts').insertMany(require('../data/contacts').data); // eslint-disable-line
+  const data = require('../data/contacts').data; // eslint-disable-line
+  data.forEach((item) => {
+    item.createdAt = new Date().toISOString();
+    item.updatedAt = new Date().toISOString();
+  });
+  await db.collection('contacts').insertMany(data);
   return next();
 };
 

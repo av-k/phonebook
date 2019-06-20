@@ -26,6 +26,7 @@ export default function contactsListCreate() {
   async function handler(request) {
     const { db } = request.mongo;
     const { list } = request.payload;
+    const nowISO = new Date().toISOString();
     const ops = [];
 
     list.forEach((item) => {
@@ -34,7 +35,7 @@ export default function contactsListCreate() {
           updateOne: {
             filter: { phoneNumber: { $eq: item.phoneNumber } },
             update: {
-              $set: { ...item, createdAt: new Date(), updatedAt: new Date() }
+              $set: { ...item, createdAt: nowISO, updatedAt: nowISO }
             },
             upsert: true
           }
