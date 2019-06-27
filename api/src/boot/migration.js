@@ -1,4 +1,5 @@
-const migrate = require('migrate');
+import path from 'path';
+import migrate from 'migrate';
 
 /**
  * Database migration
@@ -7,7 +8,8 @@ const migrate = require('migrate');
 export async function run() {
   return new Promise((resolve, reject) => {
     migrate.load({
-      stateStore: '../../.migrate'
+      stateStore: path.join(__dirname, '../../.migrate'),
+      migrationsDirectory: path.join(__dirname, '../../migrations')
     }, (error, set) => {
       if (error) {
         console.warn(`migrations unsuccessfully ran ${error}`); // eslint-disable-line

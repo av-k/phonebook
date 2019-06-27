@@ -1,5 +1,12 @@
+import fs from 'fs';
+import path from 'path';
+
+let localEnvConfig = {};
+
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config(); // eslint-disable-line
+  const dotenv = require('dotenv'); // eslint-disable-line
+  const dotenvDir = path.join(__dirname, '../../.env');
+  localEnvConfig = dotenv.parse(fs.readFileSync(dotenvDir));
 }
 
 const defaultEnvVariables = {
@@ -17,10 +24,11 @@ const defaultEnvVariables = {
     useNewUrlParser: true
   }
 };
-const envVariables = Object.keys(process.env).reduce((accumulator, envName) => {
-  const localName = envName.replace(/^API_/, '');
+const envVariables = Object.keys(localEnvConfig).reduce((accumulator, envName) => {
+  const localName = /^API_/.test(envName) ? envName.replace(/^API_/, '') : envName;
+
   if (Object.keys(defaultEnvVariables).includes(localName)) {
-    accumulator[localName] = process.env[envName];
+    accumulator[localName] = localEnvConfig[envName];
   }
 
   return accumulator;
