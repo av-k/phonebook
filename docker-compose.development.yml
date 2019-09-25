@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  db:
+    container_name: phonebook_db
+    image: mongo:latest
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+    - type: "volume"
+      source: db-data
+      target: /data/db
+      volume:
+        nocopy: true
+    command: mongod --port ${DB_PORT}
+
+volumes:
+  db-data:

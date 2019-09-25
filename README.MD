@@ -21,13 +21,17 @@ git clone https://github.com/av-k/phonebook.git
 
 #### Production Start Up:
 ```bash
-docker-compose up
+export $(cat .env.production | xargs) && docker-compose up
 # REST API will be available at URL `http://0.0.0.0:3010`
 # Web client will be available at URL `http://0.0.0.0:3000`
 ```
 
-#### Development:
-For a start in `docker-compose.yml` comment out the code for services `api` + `web` and start `db` service for DB instance.
+#### Development Start Up:
+```bash
+export $(cat .env.development | xargs) && docker-compose -f ./docker-compose.development.yml up
+# REST API will be available at URL `http://0.0.0.0:3010`
+# Web client will be available at URL `http://0.0.0.0:3000`
+```
 
 ```bash
 # API

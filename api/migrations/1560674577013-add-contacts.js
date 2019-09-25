@@ -9,9 +9,9 @@ const { MongoClient } = mongodb;
  */
 async function getDB() {
   const {
-    DB_URL, DB_HOST, DB_PORT, DB_NAME
+    DB_URL
   } = config;
-  const url = DB_URL || `mongodb://${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+  const url = DB_URL;
   let mClient = null;
 
   try {

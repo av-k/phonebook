@@ -1,30 +1,34 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config(); // eslint-disable-line
-}
+const fs = require('fs');
+const path = require('path');
 
-const defaultEnvVariables = {
-  NODE_ENV: 'development',
-  HOST: '0.0.0.0',
-  PORT: 3000,
-  APP_PREFIX: '',
-  API_HOST: '',
-  API_PORT: '',
-  API_VERSION: ''
-};
-const envVariables = Object.keys(process.env).reduce((accumulator, envName) => {
-  const localName = envName.replace(/^WEB_/, '');
-  if (Object.keys(defaultEnvVariables).includes(localName)) {
-    accumulator[localName] = process.env[envName];
+const env = (() => {
+  if (!process.env.NODE_ENV) {
+    const NODE_ENV = 'development';
+    const dotenvDir = path.join(__dirname, `../.env.${NODE_ENV}`);
+    return require('dotenv').parse(fs.readFileSync(dotenvDir));
   }
 
-  return accumulator;
-}, {});
+  const defaultEnvVariables = {
+    NODE_ENV: 'development',
+    HOST: '0.0.0.0',
+    PORT: 3000,
+    APP_PREFIX: '',
+    API_HOST: '',
+    API_PORT: '',
+    API_VERSION: ''
+  };
 
-/**
- * Get environment variables
- * @type {{NODE_ENV: string, HOST: string, PORT: number, APP_PREFIX: string}}
- */
-module.exports = {
-  ...defaultEnvVariables,
-  ...envVariables
-};
+  const filteredEnvVariables = Object.keys(process.env).reduce((accumulator, envName) => {
+    if (Object.keys(defaultEnvVariables).includes(envName)) {
+      accumulator[envName] = process.env[envName];
+    }
+    return accumulator;
+  }, {});
+
+  return {
+    ...defaultEnvVariables,
+    ...filteredEnvVariables
+  }
+})();
+
+module.exports = env;
